@@ -8,6 +8,10 @@ let activeSlot = null;
 let draggedSlot = null;
 let soullinkPairs = [];
 
+let isLinkingMode = false;
+let isKillingMode = false;
+let isDeletingMode = false;
+
 const linkColors = [
   { background: "#ADD8E680", border: "#ADD8E6" },
   { background: "#90EE9080", border: "#90EE90" },
@@ -31,10 +35,6 @@ const linkColors = [
   { background: "#7B68EE80", border: "#7B68EE" }
 ];
 
-let isLinkingMode = false;
-let isKillingMode = false;
-let selected = [];
-
 function createSlots(containerId, count) {
   const container = document.getElementById(containerId);
   for (let i = 0; i < count; i++) {
@@ -57,6 +57,16 @@ createSlots('player2-box', 15);
 createSlots('player2-dead', 15);
 
 function handleSlotClick(slot) {
+  if (isDeletingMode && slot.querySelector('img')) {
+    slot.innerHTML = '';
+    slot.style.backgroundColor = '';
+    slot.style.border = '';
+    isDeletingMode = false;
+    deactivateAllModes();
+    saveData();
+    return;
+  }
+
   if (isKillingMode && slot.querySelector('img')) {
     killPokemon(slot);
     return;
@@ -76,16 +86,11 @@ function handleSlotClick(slot) {
   }
 }
 
-function linkSelectedPokemons() {
-  const linkButton = document.getElementById('linkButton');
+let selected = [];
 
+function linkSelectedPokemons() {
   if (!isLinkingMode) {
-    isLinkingMode = true;
-    isKillingMode = false;
-    selected = [];
-    document.querySelectorAll('.pokemon-slot').forEach(slot => slot.classList.remove('linked'));
-    linkButton.classList.add('blinking');
-    document.getElementById('killButton').classList.remove('killing');
+    activateMode('link');
     alert('Bitte zwei Pokémon auswählen, um sie zu verlinken!');
   } else {
     if (selected.length === 2) {
@@ -104,10 +109,9 @@ function linkSelectedPokemons() {
       } else {
         alert('Diese Pokémon sind bereits verlinkt!');
       }
-      isLinkingMode = false;
+      deactivateAllModes();
       selected = [];
       document.querySelectorAll('.pokemon-slot').forEach(slot => slot.classList.remove('linked'));
-      linkButton.classList.remove('blinking');
     } else {
       alert('Bitte genau zwei Pokémon auswählen!');
     }
@@ -115,26 +119,47 @@ function linkSelectedPokemons() {
 }
 
 function startKillMode() {
-  const killButton = document.getElementById('killButton');
+  activateMode('kill');
+  alert('Klicke auf ein Pokémon, um es in die Toten-Box zu verschieben!');
+}
 
-  if (!isKillingMode) {
-    isKillingMode = true;
-    isLinkingMode = false;
-    selected = [];
-    killButton.classList.add('killing');
-    document.getElementById('linkButton').classList.remove('blinking');
-    alert('Klicke auf ein Pokémon, um es in die Toten-Box zu verschieben!');
-  } else {
-    isKillingMode = false;
-    killButton.classList.remove('killing');
+function startDeleteMode() {
+  activateMode('delete');
+  alert('Klicke auf ein Pokémon, um es zu löschen!');
+}
+
+function activateMode(mode) {
+  isLinkingMode = mode === 'link';
+  isKillingMode = mode === 'kill';
+  isDeletingMode = mode === 'delete';
+
+  document.getElementById('linkButton').classList.remove('blinking', 'killing', 'deleting');
+  document.getElementById('killButton').classList.remove('blinking', 'killing', 'deleting');
+  document.getElementById('deleteButton').classList.remove('blinking', 'killing', 'deleting');
+
+  if (mode === 'link') {
+    document.getElementById('linkButton').classList.add('blinking');
+  }
+  if (mode === 'kill') {
+    document.getElementById('killButton').classList.add('killing');
+  }
+  if (mode === 'delete') {
+    document.getElementById('deleteButton').classList.add('deleting');
   }
 }
 
+function deactivateAllModes() {
+  isLinkingMode = false;
+  isKillingMode = false;
+  isDeletingMode = false;
+
+  document.getElementById('linkButton').classList.remove('blinking');
+  document.getElementById('killButton').classList.remove('killing');
+  document.getElementById('deleteButton').classList.remove('deleting');
+}
+
 function killPokemon(slot) {
-  const deadBoxes = [
-    document.getElementById('player1-dead'),
-    document.getElementById('player2-dead')
-  ];
+  const deadBoxes = [document.getElementById('player1-dead'), document.getElementById('player2-dead')];
 
   for (const box of deadBoxes) {
     const deadSlots = box.querySelectorAll('.pokemon-slot');
@@ -146,9 +171,8 @@ function killPokemon(slot) {
         slot.innerHTML = '';
         slot.style.backgroundColor = '';
         slot.style.border = '';
-        isKillingMode = false;
-        document.getElementById('killButton').classList.remove('killing');
         saveData();
+        deactivateAllModes();
         return;
       }
     }
@@ -165,9 +189,8 @@ function killPokemon(slot) {
           slot.innerHTML = '';
           slot.style.backgroundColor = '';
           slot.style.border = '';
-          isKillingMode = false;
-          document.getElementById('killButton').classList.remove('killing');
           saveData();
+          deactivateAllModes();
           return;
         }
       }
@@ -176,17 +199,11 @@ function killPokemon(slot) {
 }
 
 function isAlreadyLinked(slot1, slot2) {
-  for (const pair of soullinkPairs) {
-    if ((pair[0] === slot1 && pair[1] === slot2) || (pair[0] === slot2 && pair[1] === slot1)) {
-      return true;
-    }
-  }
-  return false;
+  return soullinkPairs.some(pair => (pair[0] === slot1 && pair[1] === slot2) || (pair[0] === slot2 && pair[1] === slot1));
 }
 
 function openPokemonModal() {
-  const modal = document.getElementById('pokemonModal');
-  modal.style.display = 'flex';
+  document.getElementById('pokemonModal').style.display = 'flex';
   renderPokemonList();
 }
 
@@ -210,16 +227,6 @@ function selectPokemon(number) {
     document.getElementById('pokemonModal').style.display = 'none';
     saveData();
   }
-}
-
-function filterPokemonList() {
-  const input = document.getElementById('searchInput').value.toLowerCase();
-  const list = document.getElementById('pokemonList');
-  const items = list.querySelectorAll('div');
-  items.forEach(item => {
-    const name = item.innerText.toLowerCase();
-    item.style.display = name.includes(input) ? 'block' : 'none';
-  });
 }
 
 function dragStart(e) {

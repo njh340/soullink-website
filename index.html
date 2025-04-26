@@ -9,10 +9,7 @@
 <body>
 
 <h1>Pokémon Soullink Challenge</h1>
-
-<div class="search-bar">
-  <input type="text" id="searchInput" placeholder="Nach Pokémon suchen..." oninput="filterPokemonList()">
-</div>
+<h2 class="subheading">Pokémon HeartGold / SoulSilver</h2>
 
 <div class="main-container">
 
@@ -96,9 +93,11 @@
 </div>
 
 <div class="button-bar">
-  <button id="linkButton" onclick="linkSelectedPokemons()">Pokémon verlinken</button>
-  <button id="killButton" onclick="startKillMode()">Pokémon töten</button>
-</div>
+    <button id="linkButton" onclick="linkSelectedPokemons()">Pokémon verlinken</button>
+    <button id="killButton" onclick="startKillMode()">Pokémon töten</button>
+    <button id="deleteButton" onclick="startDeleteMode()">Pokémon löschen</button>
+  </div>
+  
 
 <div id="pokemonModal" class="modal">
   <div class="modal-content">

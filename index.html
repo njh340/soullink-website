@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokémon Soullink Challenge</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Pokémon Soullink Challenge</h1>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Nach Pokémon suchen..." oninput="filterPokemonList()">
+</div>
+
+<div class="main-container">
+
+  <!-- Linke Seite: Routen-Tracker -->
+  <div class="tracker">
+    <h2>Routen-Tracker</h2>
+    <textarea id="routeTracker" placeholder="Hier deine bereisten Routen eintragen..."></textarea>
+  </div>
+
+  <!-- Mitte: Spieler 1 & 2 -->
+  <div class="container">
+
+    <div class="player" id="player1">
+      <h2>Spieler 1</h2>
+
+      <div class="section">
+        <div class="section-title">Team (6)</div>
+        <div class="pokemon-grid" id="player1-team"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Box (15)</div>
+        <div class="pokemon-grid" id="player1-box"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Tote Pokémon (15)</div>
+        <div class="pokemon-grid" id="player1-dead"></div>
+      </div>
+
+    </div>
+
+    <div class="player" id="player2">
+      <h2>Spieler 2</h2>
+
+      <div class="section">
+        <div class="section-title">Team (6)</div>
+        <div class="pokemon-grid" id="player2-team"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Box (15)</div>
+        <div class="pokemon-grid" id="player2-box"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Tote Pokémon (15)</div>
+        <div class="pokemon-grid" id="player2-dead"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Rechte Seite: Regeln + Levelcaps -->
+  <div class="rules-box">
+    <h2>Soullink Regeln</h2>
+    <ul>
+      <li>Nur erstes Pokémon pro Route fangen</li>
+      <li>Pokémon werden gepaart (Soullink)</li>
+      <li>Stirbt eines, stirbt das gepaarte auch</li>
+      <li>Verschiedene Typen empfohlen</li>
+      <li>Keine doppelten Arten (optional)</li>
+      <li>Levelcap beachten</li>
+      <li>Keine Heilitems im Kampf (optional)</li>
+    </ul>
+
+    <h2>Levelcaps</h2>
+    <ul>
+      <li>Falk (Viola City): 13</li>
+      <li>Kai (Azalea Town): 17</li>
+      <li>Bianka (Goldenrod City): 19</li>
+      <li>Amphi (Ecruteak City): 25</li>
+      <li>Yasmina (Olivine City): 31</li>
+      <li>Norbert (Mahogany Town): 34</li>
+      <li>Sandra (Blackthorn City): 41</li>
+      <li>Rival (Silberberg): 50</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="button-bar">
+  <button id="linkButton" onclick="linkSelectedPokemons()">Pokémon verlinken</button>
+  <button id="killButton" onclick="startKillMode()">Pokémon töten</button>
+</div>
+
+<div id="pokemonModal" class="modal">
+  <div class="modal-content">
+    <div class="pokemon-list" id="pokemonList"></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

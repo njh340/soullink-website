@@ -27,6 +27,7 @@ body {
     flex-wrap: wrap;
   }
   
+  /* Tracker */
   .tracker {
     background: white;
     border-radius: 20px;
@@ -48,6 +49,7 @@ body {
     resize: none;
   }
   
+  /* Spieler */
   .container {
     display: flex;
     justify-content: center;
@@ -64,6 +66,25 @@ body {
     text-align: center;
   }
   
+  .player-header {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .player-header input {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+    width: 80%;
+    margin-bottom: 10px;
+  }
+  
+  /* Team / Boxen */
   .section {
     margin-top: 20px;
   }
@@ -105,6 +126,7 @@ body {
     background-color: #d1e7ff;
   }
   
+  /* Regeln */
   .rules-box {
     background: white;
     border-radius: 20px;
@@ -125,11 +147,7 @@ body {
     margin-bottom: 8px;
   }
   
-  .linked {
-    border: 2px solid #ffc107;
-    background-color: #fff8dc;
-  }
-  
+  /* Buttons */
   .button-bar {
     display: flex;
     justify-content: center;
@@ -147,18 +165,17 @@ body {
   }
   
   #linkButton {
-    background-color: #4CAF50; /* grün */
+    background-color: #4CAF50;
   }
   
   #killButton {
-    background-color: #f44336; /* rot */
+    background-color: #f44336;
   }
   
   #deleteButton {
-    background-color: #ff9800; /* orange */
+    background-color: #ff9800;
   }
   
-  /* Hover Farben */
   #linkButton:hover {
     background-color: #45a049;
   }
@@ -171,37 +188,7 @@ body {
     background-color: #fb8c00;
   }
   
-  /* Modus Blink-Effekte */
-  .blinking {
-    animation: blink 1s infinite;
-  }
-  
-  .killing {
-    animation: blink-kill 1s infinite;
-  }
-  
-  .deleting {
-    animation: blink-delete 1s infinite;
-  }
-  
-  @keyframes blink {
-    0% { background-color: #4CAF50; }
-    50% { background-color: #66ff66; }
-    100% { background-color: #4CAF50; }
-  }
-  
-  @keyframes blink-kill {
-    0% { background-color: #f44336; }
-    50% { background-color: #ff6666; }
-    100% { background-color: #f44336; }
-  }
-  
-  @keyframes blink-delete {
-    0% { background-color: #ff9800; }
-    50% { background-color: #ffcc80; }
-    100% { background-color: #ff9800; }
-  }
-  
+  /* Modal Pokémon Auswahl */
   .modal {
     display: none;
     position: fixed;

@@ -1,4 +1,3 @@
-// --- Pokémon-Pool (HeartGold/SoulSilver, 001-251) ---
 const pokemonNames = [];
 for (let i = 1; i <= 251; i++) {
   pokemonNames.push(i.toString().padStart(3, '0'));
@@ -7,33 +6,10 @@ for (let i = 1; i <= 251; i++) {
 let activeSlot = null;
 let draggedSlot = null;
 let soullinkPairs = [];
-
 let isLinkingMode = false;
 let isKillingMode = false;
 let isDeletingMode = false;
-
-const linkColors = [
-  { background: "#ADD8E680", border: "#ADD8E6" },
-  { background: "#90EE9080", border: "#90EE90" },
-  { background: "#FFB6C180", border: "#FFB6C1" },
-  { background: "#FFD70080", border: "#FFD700" },
-  { background: "#FFA07A80", border: "#FFA07A" },
-  { background: "#9370DB80", border: "#9370DB" },
-  { background: "#00CED180", border: "#00CED1" },
-  { background: "#40E0D080", border: "#40E0D0" },
-  { background: "#FF69B480", border: "#FF69B4" },
-  { background: "#BA55D380", border: "#BA55D3" },
-  { background: "#CD5C5C80", border: "#CD5C5C" },
-  { background: "#F0808080", border: "#F08080" },
-  { background: "#EEE8AA80", border: "#EEE8AA" },
-  { background: "#E0FFFF80", border: "#E0FFFF" },
-  { background: "#AFEEEE80", border: "#AFEEEE" },
-  { background: "#DDA0DD80", border: "#DDA0DD" },
-  { background: "#B0C4DE80", border: "#B0C4DE" },
-  { background: "#FFDEAD80", border: "#FFDEAD" },
-  { background: "#00FA9A80", border: "#00FA9A" },
-  { background: "#7B68EE80", border: "#7B68EE" }
-];
+let selected = [];
 
 function createSlots(containerId, count) {
   const container = document.getElementById(containerId);
@@ -85,8 +61,6 @@ function handleSlotClick(slot) {
     }
   }
 }
-
-let selected = [];
 
 function linkSelectedPokemons() {
   if (!isLinkingMode) {
@@ -267,10 +241,15 @@ function saveData() {
     backgroundColor: slot.style.backgroundColor,
     border: slot.style.border
   }));
+
   const trackerText = document.getElementById('routeTracker').value;
+  const player1Name = document.getElementById('player1-name')?.textContent || 'Spieler 1';
+  const player2Name = document.getElementById('player2-name')?.textContent || 'Spieler 2';
 
   localStorage.setItem('slotData', JSON.stringify(slotData));
   localStorage.setItem('trackerText', trackerText);
+  localStorage.setItem('player1-name', player1Name);
+  localStorage.setItem('player2-name', player2Name);
 }
 
 function loadData() {
@@ -287,6 +266,44 @@ function loadData() {
   });
 
   document.getElementById('routeTracker').value = trackerText;
+
+  const name1 = localStorage.getItem('player1-name');
+  const name2 = localStorage.getItem('player2-name');
+
+  if (name1) document.getElementById('player1-name').textContent = name1;
+  if (name2) document.getElementById('player2-name').textContent = name2;
+}
+
+function editName(id) {
+  const span = document.getElementById(id);
+  const currentName = span.textContent;
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = currentName;
+  input.className = 'player-name-input';
+
+  input.onblur = () => saveName(id, input.value);
+  input.onkeydown = (e) => {
+    if (e.key === 'Enter') {
+      saveName(id, input.value);
+    }
+  };
+
+  span.replaceWith(input);
+  input.focus();
+}
+
+function saveName(id, newName) {
+  const span = document.createElement('span');
+  span.id = id;
+  span.textContent = newName || 'Spieler';
+  span.setAttribute('ondblclick', `editName('${id}')`);
+
+  const input = document.querySelector('.player-name-input');
+  input.replaceWith(span);
+
+  saveData(); // wichtig: speichert Namen nach Änderung
 }
 
 window.onload = function() {
@@ -300,7 +317,7 @@ window.onclick = function(event) {
   }
 }
 
-// Automatische Nummerierung bei Enter
+// Tracker automatische Nummerierung
 const routeTracker = document.getElementById('routeTracker');
 
 routeTracker.addEventListener('focus', function() {
